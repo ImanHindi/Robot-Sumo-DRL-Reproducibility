@@ -1,0 +1,28 @@
+{
+  "title": "Competitive Learning and Adaptation in Autonomous Robot-Sumo: Reproducibility Package",
+  "upload_type": "software",
+  "description": "Frozen Webots Robot-Sumo environment, multi-seed deep reinforcement learning benchmark, asymmetric veteran-novice self-play experiment, analysis-ready datasets, and manuscript figure-generation code.",
+  "creators": [
+    {
+      "name": "Hindi, Iman",
+      "affiliation": "Al Hussein Technical University"
+    }
+  ],
+  "license": "MIT",
+  "access_right": "open",
+  "version": "1.0.0",
+  "publication_date": "2026-09-30",
+  "keywords": [
+    "reinforcement learning",
+    "robot sumo",
+    "Webots",
+    "PPO",
+    "A2C",
+    "DQN",
+    "RecurrentPPO",
+    "self-play",
+    "multi-agent reinforcement learning",
+    "robotics",
+    "reproducibility"
+  ]
+}

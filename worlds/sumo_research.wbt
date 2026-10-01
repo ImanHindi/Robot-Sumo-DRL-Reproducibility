@@ -1,0 +1,223 @@
+#VRML_SIM R2025a utf8
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackground.proto"
+EXTERNPROTO "https://raw.githubusercontent.com/cyberbotics/webots/R2025a/projects/objects/backgrounds/protos/TexturedBackgroundLight.proto"
+EXTERNPROTO "../protos/SumoRobot2.proto"
+
+WorldInfo {
+  title "Publication Sumo RL - Professional 3 kg Robot / Used Official Dohyo"
+  info [
+    "3 kg-class geometry: 1.54 m diameter, 0.05 m high, 0.05 m inward white Tawara."
+    "Top visual condition represents a maintained but used competition Dohyo with light cosmetic scuffs; physics geometry remains flat."
+    "Two robots are mechanically identical; only identification color differs."
+  ]
+  basicTimeStep 5
+  contactProperties [
+    ContactProperties {
+      material1 "wheel"
+      material2 "ring"
+      coulombFriction [ 1.2 ]
+      bounce 0
+      softERP 0.2
+      softCFM 0.002
+    }
+    ContactProperties {
+      material1 "robot_body"
+      material2 "robot_body"
+      coulombFriction [ 0.75 ]
+      bounce 0
+      softERP 0.18
+      softCFM 0.002
+    }
+    ContactProperties {
+      material1 "wheel"
+      material2 "robot_body"
+      coulombFriction [ 0.9 ]
+      bounce 0
+      softERP 0.2
+      softCFM 0.002
+    }
+    ContactProperties {
+      material1 "wheel"
+      material2 "wheel"
+      coulombFriction [ 1.0 ]
+      bounce 0
+      softERP 0.2
+      softCFM 0.002
+    }
+    ContactProperties {
+      material1 "robot_body"
+      material2 "ring"
+      coulombFriction [ 0.32 ]
+      bounce 0
+      softERP 0.18
+      softCFM 0.003
+    }
+    ContactProperties {
+      material1 "wheel"
+      material2 "safety_floor"
+      coulombFriction [ 0.9 ]
+      bounce 0
+      softERP 0.2
+      softCFM 0.002
+    }
+    ContactProperties {
+      material1 "robot_body"
+      material2 "safety_floor"
+      coulombFriction [ 0.45 ]
+      bounce 0
+      softERP 0.2
+      softCFM 0.002
+    }
+  ]
+}
+
+Viewpoint {
+  fieldOfView 0.785398
+  orientation -0.2751 0.11395 0.95464 2.38848
+  position 1.8 -1.8 1.55
+  follow "sumo_ring_platform"
+  followType "Pan and Tilt Shot"
+  followSmoothness 0
+}
+TexturedBackground { }
+TexturedBackgroundLight { }
+
+# 3.60 m square Yochi. The subtle seams are visual only and emulate a practical
+# rubber/mat safety area rather than a perfectly featureless gray plane.
+Solid {
+  translation 0 0 -0.005
+  name "safety_area"
+  contactMaterial "safety_floor"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.26 0.27 0.28
+        roughness 0.96
+        metalness 0
+      }
+      geometry Box { size 3.6 3.6 0.01 }
+    }
+    Transform { translation 0.90 0 0.0052 children [ Shape { appearance PBRAppearance { baseColor 0.21 0.22 0.23 roughness 1 } geometry Box { size 0.004 3.58 0.00015 } } ] }
+    Transform { translation -0.90 0 0.0052 children [ Shape { appearance PBRAppearance { baseColor 0.21 0.22 0.23 roughness 1 } geometry Box { size 0.004 3.58 0.00015 } } ] }
+    Transform { translation 0 0.90 0.0052 children [ Shape { appearance PBRAppearance { baseColor 0.21 0.22 0.23 roughness 1 } geometry Box { size 3.58 0.004 0.00015 } } ] }
+    Transform { translation 0 -0.90 0.0052 children [ Shape { appearance PBRAppearance { baseColor 0.21 0.22 0.23 roughness 1 } geometry Box { size 3.58 0.004 0.00015 } } ] }
+  ]
+  boundingObject Box { size 3.6 3.6 0.01 }
+}
+
+# Official 3 kg Dohyo dimensions. The physical collision top remains perfectly
+# planar. Cosmetic scuffs below are non-collision visual geometry, representing
+# normal use without simulating rule-violating gouges or damaged substrate.
+DEF SUMO_RING Solid {
+  translation 0 0 0.025
+  name "sumo_ring_platform"
+  contactMaterial "ring"
+  children [
+    Shape {
+      appearance PBRAppearance {
+        baseColor 0.12 0.125 0.13
+        roughness 0.72
+        metalness 0.58
+      }
+      geometry Cylinder { height 0.05 radius 0.77 subdivision 128 }
+    }
+
+    # White Tawara base disk.
+    Transform {
+      translation 0 0 0.02510
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.94 0.94 0.92
+            roughness 0.72
+            metalness 0.02
+          }
+          geometry Cylinder { height 0.00020 radius 0.77 subdivision 128 }
+        }
+      ]
+    }
+
+    # Black SPCC-like top disk; 5 cm white band remains visible.
+    Transform {
+      translation 0 0 0.02530
+      children [
+        Shape {
+          appearance PBRAppearance {
+            baseColor 0.018 0.019 0.020
+            roughness 0.66
+            metalness 0.22
+          }
+          geometry Cylinder { height 0.00020 radius 0.72 subdivision 128 }
+        }
+      ]
+    }
+
+    # Light cosmetic wear/scuff marks. All are dark gray and deliberately far
+    # below white-Tawara reflectance so edge sensing remains physically plausible.
+    Transform { translation 0.22 0.24 0.02543 rotation 0 0 1 0.42 children [ Shape { appearance PBRAppearance { baseColor 0.070 0.072 0.074 roughness 0.96 metalness 0.05 } geometry Box { size 0.105 0.0030 0.00005 } } ] }
+    Transform { translation -0.33 0.20 0.02543 rotation 0 0 1 -0.78 children [ Shape { appearance PBRAppearance { baseColor 0.055 0.057 0.060 roughness 0.98 metalness 0.04 } geometry Box { size 0.080 0.0020 0.00005 } } ] }
+    Transform { translation 0.40 -0.15 0.02543 rotation 0 0 1 1.12 children [ Shape { appearance PBRAppearance { baseColor 0.080 0.081 0.083 roughness 0.94 metalness 0.05 } geometry Box { size 0.060 0.0018 0.00005 } } ] }
+    Transform { translation -0.19 -0.34 0.02543 rotation 0 0 1 0.18 children [ Shape { appearance PBRAppearance { baseColor 0.060 0.061 0.063 roughness 0.96 metalness 0.04 } geometry Box { size 0.120 0.0022 0.00005 } } ] }
+    Transform { translation 0.08 -0.45 0.02543 rotation 0 0 1 -0.47 children [ Shape { appearance PBRAppearance { baseColor 0.048 0.050 0.052 roughness 0.98 metalness 0.03 } geometry Box { size 0.075 0.0018 0.00005 } } ] }
+    Transform { translation -0.46 -0.08 0.02543 rotation 0 0 1 0.95 children [ Shape { appearance PBRAppearance { baseColor 0.072 0.074 0.076 roughness 0.95 metalness 0.05 } geometry Box { size 0.055 0.0024 0.00005 } } ] }
+    Transform { translation 0.34 0.39 0.02543 rotation 0 0 1 -0.15 children [ Shape { appearance PBRAppearance { baseColor 0.050 0.052 0.054 roughness 0.98 metalness 0.03 } geometry Box { size 0.070 0.0020 0.00005 } } ] }
+    Transform { translation -0.09 0.48 0.02543 rotation 0 0 1 0.62 children [ Shape { appearance PBRAppearance { baseColor 0.066 0.068 0.070 roughness 0.96 metalness 0.04 } geometry Box { size 0.090 0.0016 0.00005 } } ] }
+    Transform { translation 0.50 0.05 0.02543 rotation 0 0 1 0.28 children [ Shape { appearance PBRAppearance { baseColor 0.058 0.060 0.062 roughness 0.97 metalness 0.04 } geometry Box { size 0.050 0.0020 0.00005 } } ] }
+    Transform { translation -0.50 0.31 0.02543 rotation 0 0 1 -0.36 children [ Shape { appearance PBRAppearance { baseColor 0.052 0.054 0.056 roughness 0.98 metalness 0.03 } geometry Box { size 0.045 0.0015 0.00005 } } ] }
+    Transform { translation 0.12 0.06 0.02543 rotation 0 0 1 1.40 children [ Shape { appearance PBRAppearance { baseColor 0.044 0.046 0.048 roughness 0.99 metalness 0.02 } geometry Box { size 0.050 0.0014 0.00005 } } ] }
+    Transform { translation -0.08 -0.12 0.02543 rotation 0 0 1 -1.16 children [ Shape { appearance PBRAppearance { baseColor 0.063 0.065 0.067 roughness 0.96 metalness 0.04 } geometry Box { size 0.040 0.0015 0.00005 } } ] }
+
+    # Shikiri-sen: two brown 20 cm x 2 cm lines, 10 cm from center.
+    Transform {
+      translation -0.10 0 0.02555
+      children [
+        Shape {
+          appearance PBRAppearance { baseColor 0.42 0.22 0.08 roughness 0.82 metalness 0 }
+          geometry Box { size 0.02 0.20 0.00020 }
+        }
+      ]
+    }
+    Transform {
+      translation 0.10 0 0.02555
+      children [
+        Shape {
+          appearance PBRAppearance { baseColor 0.42 0.22 0.08 roughness 0.82 metalness 0 }
+          geometry Box { size 0.02 0.20 0.00020 }
+        }
+      ]
+    }
+  ]
+  boundingObject Cylinder { height 0.05 radius 0.77 subdivision 128 }
+}
+
+# Identical robots; red/blue are only visual identifiers.
+DEF SUMO_0 SumoRobot2 {
+  translation -0.25 0 0.0980
+  rotation 0 0 1 1.5708
+  bodyColor 0.88 0.05 0.05
+  name "sumo_red"
+  controller "sumo_research"
+  controllerArgs ["--agent-id=0"]
+  customData "SUMO_0"
+}
+
+DEF SUMO_1 SumoRobot2 {
+  translation 0.25 0 0.0980
+  rotation 0 0 1 -1.5708
+  bodyColor 0.05 0.16 0.88
+  name "sumo_blue"
+  controller "sumo_research"
+  controllerArgs ["--agent-id=1"]
+  customData "SUMO_1"
+}
+
+DEF ARENA_SUPERVISOR Robot {
+  controller "arena_supervisor"
+  supervisor TRUE
+  synchronization TRUE
+  customData "arena_supervisor"
+  children [
+    Receiver { name "receiver" channel 1 }
+    Emitter { name "emitter" channel 1 }
+  ]
+}

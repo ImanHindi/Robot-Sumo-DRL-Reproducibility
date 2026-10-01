@@ -1,0 +1,11 @@
+# Stage 1: curriculum pre-training against a stationary robot.
+experiment:
+  stage: stage1_static
+agents:
+  "0": {mode: train, algorithm: PPO, resume_model: null}
+  "1": {mode: static}
+termination:
+  required_done_agents: [0]
+
+curriculum:
+  profile: stage1_progressive_static

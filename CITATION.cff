@@ -1,0 +1,27 @@
+cff-version: 1.2.0
+title: "Competitive Learning and Adaptation in Autonomous Robot-Sumo: Reproducibility Package"
+message: "If you use this software, data, or experimental protocol, please cite this release and the associated paper."
+type: software
+authors:
+  - family-names: Hindi
+    given-names: Iman
+    affiliation: Al Hussein Technical University
+version: 1.0.0
+date-released: 2026-09-30
+license: MIT
+abstract: >-
+  Frozen Webots Robot-Sumo environment, multi-seed deep reinforcement learning
+  benchmark, asymmetric veteran-novice self-play study, analysis-ready results,
+  and publication figure-generation code associated with a study of competitive
+  embodied reinforcement learning.
+keywords:
+  - reinforcement learning
+  - robot sumo
+  - Webots
+  - PPO
+  - A2C
+  - DQN
+  - recurrent PPO
+  - self-play
+  - multi-agent reinforcement learning
+  - reproducibility

@@ -1,0 +1,294 @@
+experiment:
+  id: baseline
+  stage: benchmark
+  seed: 0
+  run_dir: results/baseline
+  notes: Controlled Webots sumo RL experiment
+  package_version: v1.12
+  world_model: official_3kg_professional_robot_clean_reset_translational_attack_v112
+arena:
+  class_name: 3kg_official_geometry
+  ring_radius_m: 0.77
+  black_radius_m: 0.72
+  white_border_width_m: 0.05
+  platform_height_m: 0.05
+  safety_area_side_m: 3.6
+  out_margin_m: 0.0
+  ring_out_detection: safety_floor_contact_with_causal_attribution
+  safety_floor_top_z_m: 0.0
+  safety_contact_z_tolerance_m: 0.012
+  safety_contact_radial_tolerance_m: 0.005
+  fallback_center_z_threshold_m: 0.064
+  robot_spawn_z_m: 0.098
+  spawn_radius_min_m: 0.18
+  spawn_radius_max_m: 0.3
+  spawn_angular_jitter_rad: 0.3
+  max_episode_steps: 3000
+  timestep_ms: 5
+  training_spawn_mode: randomized_mirrored
+  note: Physical arena and professional robot remain unchanged from v1.10/v1.11. v1.12
+    changes only reset integrity, controller synchronization, and translational-attack
+    accounting.
+  robot_contact_match_tolerance_m: 0.008
+  contact_assist_window_steps: 200
+  surface_condition: used_light_cosmetic_scuffs
+environment:
+  sensor_max: 1000.0
+  front_engage_threshold: 0.12
+  side_detect_threshold: 0.1
+  back_detect_threshold: 0.1
+  line_risk_low: 0.0
+  line_risk_high: 0.75
+  terminal_win_reward: 12.0
+  terminal_loss_reward: -12.0
+  timeout_reward: -4.0
+  time_penalty: -0.0003
+  front_engagement_reward: 0.0
+  attack_reward: 0.0035
+  correct_turn_reward: 0.0004
+  edge_risk_penalty: -0.03
+  log_every_episode: true
+  forced_ringout_bonus: 3.0
+  unforced_win_bonus: 0.0
+  unforced_self_out_penalty: -3.0
+  target_detect_floor: 0.04
+  rear_turn_reward: 0.0003
+  safe_search_forward_reward: 0.00012
+  scan_reward: 0.00025
+  backward_without_edge_penalty: -0.001
+  approach_progress_reward_scale: 0.0
+  retreat_from_target_penalty_scale: 0.0
+  front_attack_threshold: 0.38
+  attack_medium_speed_bonus: 0.0008
+  attack_high_speed_bonus: 0.0018
+  approach_distance_reward_scale: 0.45
+  retreat_distance_penalty_scale: -0.22
+  visible_target_nonforward_penalty: -0.0015
+  backward_from_visible_target_penalty: -0.002
+  front_spin_penalty: -0.0008
+  first_contact_reward: 0.75
+  sustained_contact_forward_reward: 0.0035
+  contact_nonforward_penalty: -0.0006
+  push_outward_reward_scale: 0.75
+training:
+  total_timesteps: 500000
+  checkpoint_every_steps: 50000
+  tensorboard: true
+  deterministic_torch: false
+algorithms:
+  A2C:
+    learning_rate: 0.0007
+    n_steps: 128
+    gamma: 0.99
+    gae_lambda: 0.95
+    ent_coef: 0.01
+    vf_coef: 0.5
+    policy_net:
+    - 128
+    - 128
+  PPO:
+    learning_rate: 0.0003
+    n_steps: 1024
+    batch_size: 256
+    n_epochs: 10
+    gamma: 0.99
+    gae_lambda: 0.95
+    clip_range: 0.2
+    ent_coef: 0.01
+    policy_net:
+    - 128
+    - 128
+  DQN:
+    learning_rate: 0.0001
+    buffer_size: 100000
+    learning_starts: 10000
+    batch_size: 256
+    gamma: 0.99
+    train_freq: 4
+    gradient_steps: 1
+    target_update_interval: 5000
+    exploration_fraction: 0.3
+    exploration_final_eps: 0.05
+    policy_net:
+    - 128
+    - 128
+  RecurrentPPO:
+    learning_rate: 0.0003
+    n_steps: 1024
+    batch_size: 256
+    n_epochs: 10
+    gamma: 0.99
+    gae_lambda: 0.95
+    clip_range: 0.2
+    ent_coef: 0.01
+    policy_net:
+    - 128
+    - 128
+    lstm_hidden_size: 128
+    n_lstm_layers: 1
+agents:
+  '0':
+    mode: train
+    algorithm: PPO
+    resume_model: null
+    deterministic_eval: true
+  '1':
+    mode: scripted
+    scripted_profile: standard
+    deterministic_eval: true
+scripted_opponents:
+  standard:
+    search_speed: 7.0
+    attack_speed: 16.0
+    turn_speed: 11.0
+    reverse_speed: 9.0
+    edge_backup_steps: 90
+    edge_turn_steps: 90
+    edge_escape_speed: 12.0
+    edge_escape_steps: 90
+    edge_turn_speed: 10.0
+    post_edge_guard_steps: 60
+  aggressive:
+    search_speed: 10.0
+    attack_speed: 18.0
+    turn_speed: 14.0
+    reverse_speed: 11.0
+    edge_backup_steps: 100
+    edge_turn_steps: 100
+    edge_escape_speed: 14.0
+    edge_escape_steps: 100
+    edge_turn_speed: 12.0
+    post_edge_guard_steps: 80
+evaluation:
+  episodes: 100
+  deterministic: true
+protocol:
+  reset_retry_interval_steps: 20
+  reset_max_wait_steps: 3000
+  episode_end_retry_interval_steps: 20
+  reset_quiesce_steps: 4
+  reset_settle_steps: 20
+  reset_done_retry_interval_steps: 20
+  reset_required_ack_agents: auto
+  post_reset_integrity_guard_steps: 20
+  reset_position_tolerance_m: 0.025
+  reset_z_tolerance_m: 0.03
+  reset_max_reapply_attempts: 3
+termination:
+  required_done_agents:
+  - 0
+drive:
+  wheel_radius_m: 0.03
+  motor_max_velocity_rad_s: 22.0
+  motor_max_torque_nm: 1.5
+  action_speeds_rad_s:
+    low: 7.0
+    medium: 12.0
+    high: 18.0
+  note: Professional 60 mm wheel model; high action corresponds to 0.54 m/s nominal
+    wheel-rim speed.
+reward_design:
+  principle: official_outcome_plus_attack_commitment_contact_shaping_with_translational_motion_semantics
+  official_rule: opponent_out_for_any_reason_is_a_win
+  causal_attribution: contact_assisted_if_robot_robot_contact_within_window
+  note: v1.12 preserves v1.11 reward magnitudes but classifies any command with both
+    wheels positive as forward-translational attack motion. Straight and curved forward
+    motion are logged separately. Reset-integrity artifacts receive zero terminal
+    reward and are excluded from publication evaluation.
+  training_only_privileged_telemetry: true
+  policy_observation_unchanged: true
+  curriculum_attack_multipliers:
+    1A_attack_close: 1.8
+    1B_orient_and_approach: 1.4
+    1C_search_static: 1.15
+    2A_moving_near: 1.2
+    2B_moving_search: 1.0
+    E_randomized: 1.0
+  translational_attack_semantics: true
+  reset_artifact_reward_zero: true
+robot_design:
+  class: 3kg_autonomous_professional_reference
+  identical_competitors: true
+  inspection_footprint_m:
+  - 0.195
+  - 0.195
+  mass_kg: 3.0
+  wheel_diameter_m: 0.06
+  wheel_width_m: 0.028
+  wedge_width_m: 0.195
+  wedge_length_m: 0.075
+  wedge_thickness_m: 0.0025
+  wedge_material_reference: smooth stainless steel, rounded/polished leading edge
+  edge_sensors: 4
+  opponent_range_sensors: 4
+  note: Geometry is intended as a hardware-buildable reference. Final fabrication
+    must be checked against the target tournament inspection and safety rules.
+  edge_sensor_nominal_clearance_m: 0.0026
+  edge_sensor_lookup_range_m: 0.03
+  opponent_sensor_model:
+    front_range_m: 0.85
+    front_aperture_rad: 0.42
+    front_rays: 9
+    side_range_m: 0.7
+    side_aperture_rad: 0.52
+    side_rays: 7
+    rear_range_m: 0.65
+    rear_aperture_rad: 0.5
+    rear_rays: 5
+    note: Multi-ray range-sensor abstraction selected for robust search; match with
+      practical ToF/IR hardware during build calibration.
+curriculum:
+  enabled: true
+  profile: stage1_progressive_static
+  principle: attack_commitment_then_orient_then_search
+  stage1_progressive_static:
+    breaks:
+    - 0.45
+    - 0.78
+    - 1.0
+    levels:
+    - name: 1A_attack_close
+      distance_min_m: 0.24
+      distance_max_m: 0.32
+      learner_heading_error_rad: 0.05
+      opponent_heading_error_rad: 0.05
+      midpoint_radius_m: 0.06
+    - name: 1B_orient_and_approach
+      distance_min_m: 0.3
+      distance_max_m: 0.46
+      learner_heading_error_rad: 0.5
+      opponent_heading_error_rad: 0.12
+      midpoint_radius_m: 0.08
+    - name: 1C_search_static
+      distance_min_m: 0.4
+      distance_max_m: 0.65
+      learner_heading_error_rad: 3.14159
+      opponent_heading_error_rad: 0.3
+      midpoint_radius_m: 0.1
+  stage2_progressive_scripted:
+    breaks:
+    - 0.55
+    - 1.0
+    levels:
+    - name: 2A_moving_near
+      distance_min_m: 0.34
+      distance_max_m: 0.5
+      learner_heading_error_rad: 0.8
+      opponent_heading_error_rad: 0.4
+      midpoint_radius_m: 0.08
+    - name: 2B_moving_search
+      distance_min_m: 0.45
+      distance_max_m: 0.72
+      learner_heading_error_rad: 3.14159
+      opponent_heading_error_rad: 3.14159
+      midpoint_radius_m: 0.1
+  evaluation_randomized:
+    breaks:
+    - 1.0
+    levels:
+    - name: E_randomized
+      distance_min_m: 0.45
+      distance_max_m: 0.78
+      learner_heading_error_rad: 3.14159
+      opponent_heading_error_rad: 3.14159
+      midpoint_radius_m: 0.12

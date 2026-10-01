@@ -1,0 +1,28 @@
+{
+  "@context": "https://doi.org/10.5063/schema/codemeta-2.0",
+  "@type": "SoftwareSourceCode",
+  "name": "Competitive Learning and Adaptation in Autonomous Robot-Sumo: Reproducibility Package",
+  "version": "1.0.0",
+  "datePublished": "2026-09-30",
+  "license": "https://spdx.org/licenses/MIT.html",
+  "programmingLanguage": ["Python", "Webots PROTO", "Arduino"],
+  "author": [
+    {
+      "@type": "Person",
+      "givenName": "Iman",
+      "familyName": "Hindi",
+      "affiliation": {
+        "@type": "Organization",
+        "name": "Al Hussein Technical University"
+      }
+    }
+  ],
+  "keywords": [
+    "reinforcement learning",
+    "robot sumo",
+    "Webots",
+    "self-play",
+    "robotics",
+    "reproducibility"
+  ]
+}

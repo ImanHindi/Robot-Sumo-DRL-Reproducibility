@@ -1,0 +1,11 @@
+# Stage 2: continue the trained policy against a moving, edge-aware scripted robot.
+experiment:
+  stage: stage2_scripted
+agents:
+  "0": {mode: train, algorithm: PPO, resume_model: "PATH_TO_STAGE1_MODEL"}
+  "1": {mode: scripted, scripted_profile: standard}
+termination:
+  required_done_agents: [0]
+
+curriculum:
+  profile: stage2_progressive_scripted

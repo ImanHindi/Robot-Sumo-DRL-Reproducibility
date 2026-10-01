@@ -1,0 +1,20 @@
+name: sumo_rl_research
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  - pip
+  - pip:
+      - numpy==2.0.2
+      - pandas==2.3.0
+      - matplotlib==3.9.4
+      - scipy==1.13.1
+      - PyYAML==6.0.2
+      - gymnasium==1.1.1
+      - stable-baselines3==2.6.0
+      - sb3-contrib==2.6.0
+      - tensorboard==2.19.0
+      - torch==2.5.1
+      - pyserial>=3.5
+      - psutil>=5.9,<8

@@ -1,0 +1,26 @@
+{
+  "release_version": "1.0.0",
+  "release_date": "2026-09-30",
+  "author": "Iman Hindi",
+  "affiliation": "Al Hussein Technical University",
+  "paper_title": "Competitive Learning and Adaptation in Autonomous Robot-Sumo: Multi-Seed Deep Reinforcement Learning Benchmarking and Asymmetric Veteran-Novice Self-Play",
+  "benchmark": {
+    "frozen_environment_version": "v1.12",
+    "run_id": "20260913_220238_benchmark_v112",
+    "algorithms": ["A2C", "PPO", "DQN", "RecurrentPPO"],
+    "seeds": [0, 1, 2, 3, 4],
+    "stage1_steps": 200000,
+    "stage2_steps": 300000,
+    "evaluation_episodes_per_condition": 100,
+    "conditions": ["static", "scripted", "aggressive"],
+    "total_evaluation_episodes": 6000
+  },
+  "selfplay": {
+    "extension_version": "v1.14",
+    "run_id": "20260918_074640_asymmetric_selfplay_v114",
+    "algorithm": "PPO",
+    "seeds": [0, 1, 2, 3, 4],
+    "stage3_steps": 500000,
+    "checkpoint_steps": [100000, 200000, 300000, 400000, 500000]
+  }
+}

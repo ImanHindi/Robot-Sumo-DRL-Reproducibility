@@ -1,0 +1,5 @@
+comparison,stage3_steps,n_pairs,test,statistic,p_value,mean_paired_difference,median_paired_difference,bootstrap_ci95_low,bootstrap_ci95_high,note
+final_h2h_novice_vs_veteran_win_rate,500000.0,5,paired Wilcoxon signed-rank,1.0,0.6547208460185769,-0.07100000000000001,0.0,-0.24000000000000005,0.027000000000000003,"Seed is the independent unit; with n=5, inferential power is intentionally limited."
+veteran_forced_win_post_minus_pre_static,,5,paired Wilcoxon signed-rank,0.0,0.17971249487899976,-0.02,0.0,-0.052000000000000005,0.0,Uses the same benchmark evaluation seed before and after self-play.
+veteran_forced_win_post_minus_pre_scripted,,5,paired Wilcoxon signed-rank,0.0,0.17971249487899976,-0.088,0.0,-0.184,0.0,Uses the same benchmark evaluation seed before and after self-play.
+veteran_forced_win_post_minus_pre_aggressive,,5,paired Wilcoxon signed-rank,0.0,0.10880943004054569,-0.096,-0.01,-0.202,-0.002,Uses the same benchmark evaluation seed before and after self-play.

@@ -1,0 +1,302 @@
+#VRML_SIM R2025a utf8
+
+# Professional 3 kg autonomous sumo robot reference design.
+# Both competitors use exactly the same geometry, mass, drivetrain, sensors and
+# collision model; only bodyColor/name/controller identity differ in the world.
+#
+# Mechanical concept (hardware-buildable):
+# - 195 x 195 mm inspection footprint (5 mm total tolerance under 200 x 200 mm)
+# - low-profile armored chassis
+# - smooth stainless-steel front wedge / "kas7a" (not sharpened)
+# - two protected 60 mm high-grip drive wheels
+# - low, slightly rear-biased center of mass
+# - four downward IR edge sensors aggregated into left/right edge flags
+# - front, rear, left and right opponent range sensors
+#
+# Local forward direction is -Y. Positive wheel motor velocity drives toward -Y.
+
+PROTO SumoRobot2 [
+  field SFVec3f translation 0 0 0
+  field SFRotation rotation 0 1 0 0
+  field SFColor bodyColor 1 0 0
+  field SFString name "sumo"
+  field SFString controller ""
+  field MFString controllerArgs []
+  field SFString customData ""
+] {
+  Robot {
+    translation IS translation
+    rotation IS rotation
+    name IS name
+    controller IS controller
+    controllerArgs IS controllerArgs
+    customData IS customData
+    contactMaterial "robot_body"
+    children [
+      # Main low-profile chassis / electronics enclosure.
+      Transform {
+        translation 0 0.032 0.004
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.12 0.13 0.15
+              roughness 0.62
+              metalness 0.72
+            }
+            geometry Box { size 0.190 0.125 0.048 }
+          }
+        ]
+      }
+
+      # Colored top identification panel. Geometry is identical for both robots.
+      Transform {
+        translation 0 0.035 0.030
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor IS bodyColor
+              roughness 0.45
+              metalness 0.25
+            }
+            geometry Box { size 0.172 0.100 0.006 }
+          }
+        ]
+      }
+
+      # Smooth stainless-steel front wedge. The front lip is ~1 mm above the
+      # nominal Dohyo surface at reset and may lightly contact under dynamic load.
+      # Physical build: use a polished/rounded leading edge; never sharpen it.
+      Transform {
+        translation 0 -0.060 -0.0373
+        rotation 1 0 0 0.240
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.58 0.60 0.63
+              roughness 0.30
+              metalness 0.92
+            }
+            geometry Box { size 0.195 0.075 0.0025 }
+          }
+        ]
+      }
+
+      # Side armor rails and rear bumper remain within 195 x 195 mm envelope.
+      Transform {
+        translation 0.096 0.015 0.005
+        children [
+          Shape {
+            appearance PBRAppearance { baseColor 0.17 0.18 0.20 roughness 0.55 metalness 0.75 }
+            geometry Box { size 0.003 0.155 0.044 }
+          }
+        ]
+      }
+      Transform {
+        translation -0.096 0.015 0.005
+        children [
+          Shape {
+            appearance PBRAppearance { baseColor 0.17 0.18 0.20 roughness 0.55 metalness 0.75 }
+            geometry Box { size 0.003 0.155 0.044 }
+          }
+        ]
+      }
+      Transform {
+        translation 0 0.096 0.005
+        children [
+          Shape {
+            appearance PBRAppearance { baseColor 0.16 0.17 0.19 roughness 0.60 metalness 0.72 }
+            geometry Box { size 0.190 0.003 0.044 }
+          }
+        ]
+      }
+
+      # Small low-friction rear skid gives stable three-point support together
+      # with the two drive wheels; it is a realistic hardware-buildable PTFE pad.
+      Transform {
+        translation 0 0.086 -0.0462
+        children [
+          Shape {
+            appearance PBRAppearance { baseColor 0.80 0.80 0.77 roughness 0.75 metalness 0 }
+            geometry Box { size 0.050 0.016 0.002 }
+          }
+        ]
+      }
+
+      # Status LED recommended for autonomous competition operation.
+      Transform {
+        translation 0 0.055 0.035
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor 0.05 0.80 0.15
+              emissiveColor 0.02 0.30 0.05
+              roughness 0.35
+            }
+            geometry Cylinder { radius 0.006 height 0.003 }
+          }
+        ]
+      }
+
+      # Left drive wheel: local +X. Native Cylinder axle (+Z) rotated to +X.
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          anchor 0.073 0.028 -0.0175
+          axis 1 0 0
+        }
+        device RotationalMotor {
+          name "left wheel motor"
+          maxTorque 1.5
+          maxVelocity 22
+        }
+        endPoint Solid {
+          name "left_wheel"
+          translation 0.073 0.028 -0.0175
+          rotation 0 1 0 1.5708
+          contactMaterial "wheel"
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.035 0.035 0.035
+                roughness 1
+                metalness 0
+              }
+              geometry Cylinder { radius 0.030 height 0.028 subdivision 32 }
+            }
+          ]
+          boundingObject Cylinder { radius 0.030 height 0.028 subdivision 32 }
+          physics Physics { density -1 mass 0.18 }
+        }
+      }
+
+      # Right drive wheel: local -X.
+      HingeJoint {
+        jointParameters HingeJointParameters {
+          anchor -0.073 0.028 -0.0175
+          axis 1 0 0
+        }
+        device RotationalMotor {
+          name "right wheel motor"
+          maxTorque 1.5
+          maxVelocity 22
+        }
+        endPoint Solid {
+          name "right_wheel"
+          translation -0.073 0.028 -0.0175
+          rotation 0 1 0 1.5708
+          contactMaterial "wheel"
+          children [
+            Shape {
+              appearance PBRAppearance {
+                baseColor 0.035 0.035 0.035
+                roughness 1
+                metalness 0
+              }
+              geometry Cylinder { radius 0.030 height 0.028 subdivision 32 }
+            }
+          ]
+          boundingObject Cylinder { radius 0.030 height 0.028 subdivision 32 }
+          physics Physics { density -1 mass 0.18 }
+        }
+      }
+
+      # Opponent sensors. These are generic hardware-equivalent range sensors;
+      # the RL observation remains intentionally compact for sim-to-real transfer.
+      DistanceSensor {
+        name "front_distance_sensor"
+        translation 0 -0.091 0.005
+        rotation 0 0 1 -1.5708
+        numberOfRays 9
+        aperture 0.42
+        gaussianWidth 1.8
+        lookupTable [ 0.0 1000.0 0.0  0.85 0.0 0.0 ]
+      }
+      DistanceSensor {
+        name "back_sensor"
+        translation 0 0.094 0.008
+        rotation 0 0 1 1.5708
+        numberOfRays 5
+        aperture 0.50
+        gaussianWidth 1.8
+        lookupTable [ 0.0 1000.0 0.0  0.65 0.0 0.0 ]
+      }
+      DistanceSensor {
+        name "left_side_sensor"
+        translation 0.094 0.010 0.008
+        rotation 0 0 1 0
+        numberOfRays 7
+        aperture 0.52
+        gaussianWidth 1.8
+        lookupTable [ 0.0 1000.0 0.0  0.70 0.0 0.0 ]
+      }
+      DistanceSensor {
+        name "right_side_sensor"
+        translation -0.094 0.010 0.008
+        rotation 0 0 1 3.14159
+        numberOfRays 7
+        aperture 0.52
+        gaussianWidth 1.8
+        lookupTable [ 0.0 1000.0 0.0  0.70 0.0 0.0 ]
+      }
+
+      # Four downward IR edge sensors. The controller aggregates front+rear on
+      # each side so the policy keeps the same six-dimensional observation.
+      DistanceSensor {
+        name "left_ground_sensor"
+        type "infra-red"
+        translation 0.078 -0.075 -0.045
+        rotation 0 1 0 1.5708
+        lookupTable [ 0.0 1000.0 0.0  0.03 0.0 0.0 ]
+      }
+      DistanceSensor {
+        name "right_ground_sensor"
+        type "infra-red"
+        translation -0.078 -0.075 -0.045
+        rotation 0 1 0 1.5708
+        lookupTable [ 0.0 1000.0 0.0  0.03 0.0 0.0 ]
+      }
+      DistanceSensor {
+        name "left_rear_ground_sensor"
+        type "infra-red"
+        translation 0.078 0.075 -0.045
+        rotation 0 1 0 1.5708
+        lookupTable [ 0.0 1000.0 0.0  0.03 0.0 0.0 ]
+      }
+      DistanceSensor {
+        name "right_rear_ground_sensor"
+        type "infra-red"
+        translation -0.078 0.075 -0.045
+        rotation 0 1 0 1.5708
+        lookupTable [ 0.0 1000.0 0.0  0.03 0.0 0.0 ]
+      }
+
+      Emitter { name "emitter" channel 1 }
+      Receiver { name "receiver" channel 1 }
+    ]
+
+    # Compound collision body: chassis + steel wedge + rear bumper/skid.
+    # All dimensions remain inside the 195 x 195 mm inspection envelope.
+    boundingObject Group {
+      children [
+        Transform {
+          translation 0 0.032 0.004
+          children [ Box { size 0.190 0.125 0.048 } ]
+        }
+        Transform {
+          translation 0 -0.060 -0.0373
+          rotation 1 0 0 0.240
+          children [ Box { size 0.195 0.075 0.0025 } ]
+        }
+        Transform {
+          translation 0 0.086 -0.0462
+          children [ Box { size 0.050 0.016 0.002 } ]
+        }
+      ]
+    }
+    physics Physics {
+      density -1
+      mass 2.64
+      centerOfMass [ 0 0.028 -0.010 ]
+      damping Damping { linear 0.03 angular 0.05 }
+    }
+  }
+}

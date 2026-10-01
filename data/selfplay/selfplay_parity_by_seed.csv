@@ -1,0 +1,6 @@
+seed,first_checkpoint_novice_parity_steps,final_veteran_win_rate,final_novice_win_rate,final_novice_advantage,final_veteran_forced_win_rate,final_novice_forced_win_rate
+0,,0.54,0.14,-0.4,0.04,0.055
+1,200000.0,0.0,0.0,0.0,0.0,0.0
+2,100000.0,0.0,0.045,0.045,0.0,0.045
+3,100000.0,0.0,0.0,0.0,0.0,0.0
+4,100000.0,0.0,0.0,0.0,0.0,0.0

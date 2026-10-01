@@ -1,0 +1,8 @@
+# Stage 3: asymmetric self-play. Agent 0 is the veteran; Agent 1 starts fresh.
+experiment:
+  stage: stage3_asymmetric_selfplay
+agents:
+  "0": {mode: train, algorithm: PPO, resume_model: "PATH_TO_VETERAN_MODEL"}
+  "1": {mode: train, algorithm: PPO, resume_model: null}
+termination:
+  required_done_agents: [0, 1]
